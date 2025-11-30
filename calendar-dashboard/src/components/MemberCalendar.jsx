@@ -206,29 +206,32 @@ const MemberCalendar = ({ data }) => {
 
   return (
     <Box sx={{ 
-      maxWidth: 1200, 
+      maxWidth: 1400, 
       mx: 'auto', 
-      px: { xs: 2, md: 0 },
-      backgroundColor: '#fafbfc',
+      px: { xs: 1.5, md: 2 },
+      backgroundColor: '#ffffff',
       minHeight: '100vh',
-      py: 3
+      py: 2
     }}>
-      {/* Header Section */}
+      {/* Mobile-Optimized Header Section */}
       <Box sx={{ 
         display: 'flex',
+        flexDirection: { xs: 'column', sm: 'row' },
         justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        mb: 4,
-        px: 0
+        alignItems: { xs: 'flex-start', sm: 'center' },
+        gap: { xs: 1.5, sm: 0 },
+        mb: 2,
+        pb: 2,
+        borderBottom: '1px solid #e5e7eb'
       }}>
-        <Box>
+        <Box sx={{ flex: 1, minWidth: 0 }}>
           <Typography 
-            variant="h4" 
+            variant="h5" 
             sx={{ 
-              mb: 1, 
-              fontWeight: 600, 
-              color: '#1a202c',
-              fontSize: { xs: '1.75rem', md: '2rem' },
+              mb: 0.25, 
+              fontWeight: 700, 
+              color: '#111827',
+              fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.5rem' },
               letterSpacing: '-0.02em',
               fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
             }}
@@ -236,45 +239,45 @@ const MemberCalendar = ({ data }) => {
             Team Calendar
           </Typography>
           <Typography 
-            variant="body1" 
+            variant="caption" 
             sx={{ 
-              color: '#4a5568',
+              color: '#6b7280',
               fontWeight: 400,
-              fontSize: '0.95rem',
-              fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
-              letterSpacing: '0.01em'
+              fontSize: { xs: '0.6875rem', sm: '0.75rem' },
+              fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
             }}
           >
-            Weekly team schedule overview
+            Weekly schedule overview
           </Typography>
         </Box>
         
-        {/* View Toggle */}
+        {/* Mobile-Optimized View Toggle */}
         <Box sx={{ 
           display: 'flex',
-          background: '#ffffff',
-          borderRadius: 1,
-          border: '1px solid #d1d5db',
+          background: '#f3f4f6',
+          borderRadius: 1.5,
           overflow: 'hidden',
-          boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+          border: 'none',
+          width: { xs: '100%', sm: 'auto' }
         }}>
           <Button
             variant={viewMode === 'calendar' ? 'contained' : 'text'}
             onClick={() => setViewMode('calendar')}
-            startIcon={<CalendarViewIcon />}
+            startIcon={<CalendarViewIcon sx={{ fontSize: { xs: 16, sm: 18 } }} />}
             sx={{
-              minWidth: 120,
-              py: 1,
-              px: 2,
-              fontSize: '0.875rem',
-              fontWeight: 500,
+              flex: { xs: 1, sm: 'none' },
+              minWidth: { xs: 0, sm: 100 },
+              py: { xs: 1, sm: 0.75 },
+              px: { xs: 1, sm: 1.5 },
+              fontSize: { xs: '0.75rem', sm: '0.8125rem' },
+              fontWeight: 600,
               fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
-              backgroundColor: viewMode === 'calendar' ? '#374151' : 'transparent',
+              backgroundColor: viewMode === 'calendar' ? '#111827' : 'transparent',
               color: viewMode === 'calendar' ? '#ffffff' : '#6b7280',
-              borderRadius: 0,
+              borderRadius: 1.5,
               '&:hover': {
-                backgroundColor: viewMode === 'calendar' ? '#1f2937' : '#f9fafb',
-                color: viewMode === 'calendar' ? '#ffffff' : '#374151'
+                backgroundColor: viewMode === 'calendar' ? '#1f2937' : 'transparent',
+                color: viewMode === 'calendar' ? '#ffffff' : '#111827'
               },
               '&.MuiButton-contained': {
                 boxShadow: 'none'
@@ -286,20 +289,21 @@ const MemberCalendar = ({ data }) => {
           <Button
             variant={viewMode === 'list' ? 'contained' : 'text'}
             onClick={() => setViewMode('list')}
-            startIcon={<ListViewIcon />}
+            startIcon={<ListViewIcon sx={{ fontSize: { xs: 16, sm: 18 } }} />}
             sx={{
-              minWidth: 120,
-              py: 1,
-              px: 2,
-              fontSize: '0.875rem',
-              fontWeight: 500,
+              flex: { xs: 1, sm: 'none' },
+              minWidth: { xs: 0, sm: 100 },
+              py: { xs: 1, sm: 0.75 },
+              px: { xs: 1, sm: 1.5 },
+              fontSize: { xs: '0.75rem', sm: '0.8125rem' },
+              fontWeight: 600,
               fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
-              backgroundColor: viewMode === 'list' ? '#374151' : 'transparent',
+              backgroundColor: viewMode === 'list' ? '#111827' : 'transparent',
               color: viewMode === 'list' ? '#ffffff' : '#6b7280',
-              borderRadius: 0,
+              borderRadius: 1.5,
               '&:hover': {
-                backgroundColor: viewMode === 'list' ? '#1f2937' : '#f9fafb',
-                color: viewMode === 'list' ? '#ffffff' : '#374151'
+                backgroundColor: viewMode === 'list' ? '#1f2937' : 'transparent',
+                color: viewMode === 'list' ? '#ffffff' : '#111827'
               },
               '&.MuiButton-contained': {
                 boxShadow: 'none'
@@ -311,377 +315,192 @@ const MemberCalendar = ({ data }) => {
         </Box>
       </Box>
 
-      {/* Filters Section */}
+      {/* Mobile-Optimized Filters Section */}
       <Box sx={{ 
-        mb: 3, 
-        background: '#ffffff',
+        mb: 2, 
+        background: '#f9fafb',
         borderRadius: 2,
-        border: '1px solid #e2e8f0',
-        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+        border: '1px solid #e5e7eb',
         overflow: 'hidden'
       }}>
         {/* Filters Content */}
         <Box sx={{ 
-          p: 3,
+          p: { xs: 1, sm: 1.5 },
           display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'space-between',
-          gap: 3,
-          flexWrap: 'wrap'
+          flexDirection: { xs: 'column', sm: 'row' },
+          alignItems: { xs: 'stretch', sm: 'center' },
+          gap: { xs: 1, sm: 2 }
         }}>
-          {/* Left side - Filters */}
+          {/* Mobile-Optimized Filters */}
           <Box sx={{ 
             display: 'flex', 
             alignItems: 'center', 
-            gap: 3,
-            flexWrap: 'wrap',
-            flex: 1
+            gap: 0.75, 
+            background: '#ffffff', 
+            borderRadius: 1.5, 
+            border: '1px solid #e5e7eb', 
+            px: 1, 
+            width: { xs: '100%', sm: 'auto' },
+            minWidth: { xs: 0, sm: 160 }
           }}>
-            {/* Team Filter */}
-            <Box sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: 2,
-              background: '#ffffff',
-              px: 2,
-              py: 1.5,
-              borderRadius: 1,
-              border: '1px solid #d1d5db',
-              transition: 'all 0.2s ease',
-              minWidth: 180,
-              '&:hover': {
-                borderColor: '#9ca3af',
-                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
-              }
-            }}>
-              <Box sx={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center',
-                width: 24,
-                height: 24,
-                background: '#374151',
-                borderRadius: '4px',
-                color: 'white',
-                flexShrink: 0
-              }}>
-                <GroupIcon sx={{ fontSize: '0.9rem' }} />
-              </Box>
-              <Box sx={{ minWidth: 0, flex: 1, textAlign: 'left' }}>
-                <Typography variant="caption" sx={{ 
-                  color: '#6b7280',
+            <GroupIcon sx={{ fontSize: { xs: 14, sm: 16 }, color: '#6b7280', flexShrink: 0 }} />
+            <FormControl size="small" sx={{ flex: 1, minWidth: 0 }}>
+              <Select
+                value={selectedTeam}
+                onChange={(e) => {
+                  setSelectedTeam(e.target.value);
+                  setSelectedMember('all');
+                }}
+                sx={{
+                  border: 'none',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    border: 'none'
+                  },
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    border: 'none'
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    border: 'none'
+                  },
+                  fontSize: { xs: '0.75rem', sm: '0.8125rem' },
                   fontWeight: 500,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
-                  fontSize: '0.65rem',
-                  display: 'block',
-                  mb: 0.5,
-                  fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
-                }}>
-                  Department
-                </Typography>
-                <FormControl size="small" sx={{ width: '100%' }}>
-                  <Select
-                    value={selectedTeam}
-                    onChange={(e) => {
-                      setSelectedTeam(e.target.value);
-                      setSelectedMember('all');
-                    }}
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        '& fieldset': { border: 'none' },
-                        '&:hover fieldset': { border: 'none' },
-                        '&.Mui-focused fieldset': { border: 'none' },
-                        background: 'transparent',
-                        fontWeight: 500,
-                        color: '#1f2937',
-                        width: '100%',
-                        textAlign: 'left',
-                        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
-                      },
-                      '& .MuiSelect-select': {
-                        py: 0.5,
-                        px: 1,
-                        width: '100%',
-                        textOverflow: 'ellipsis',
-                        overflow: 'hidden',
-                        whiteSpace: 'nowrap',
-                        textAlign: 'left',
-                        justifyContent: 'flex-start',
-                        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
-                      }
-                    }}
-                  >
-                    <MenuItem value="all" sx={{ 
-                      fontWeight: 500, 
-                      textAlign: 'left',
-                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
-                    }}>
-                      All Teams ({uniqueTeams.length})
-                    </MenuItem>
-                    {uniqueTeams.map((team) => (
-                      <MenuItem 
-                        key={team} 
-                        value={team}
-                        sx={{ 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          gap: 2,
-                          fontWeight: 500,
-                          fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
-                        }}
-                      >
-                        <Box sx={{ minWidth: 0, flex: 1 }}>
-                          <Typography variant="body2" sx={{ 
-                            fontWeight: 500, 
-                            color: '#1f2937',
-                            textOverflow: 'ellipsis',
-                            overflow: 'hidden',
-                            whiteSpace: 'nowrap',
-                            fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
-                          }}>
-                            {formatTeamName(team)}
-                          </Typography>
-                          <Typography variant="caption" sx={{ 
-                            color: '#6b7280',
-                            textOverflow: 'ellipsis',
-                            overflow: 'hidden',
-                            whiteSpace: 'nowrap',
-                            fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
-                          }}>
-                            {Object.values(memberCalendarData).filter(member => member.team === team).length} members
-                          </Typography>
-                        </Box>
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
-            </Box>
-
-            {/* Member Filter */}
-            <Box sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: 2,
-              background: '#ffffff',
-              px: 2,
-              py: 1.5,
-              borderRadius: 1,
-              border: '1px solid #d1d5db',
-              transition: 'all 0.2s ease',
-              minWidth: 200,
-              '&:hover': {
-                borderColor: '#9ca3af',
-                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
-              }
-            }}>
-              <Box sx={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center',
-                width: 24,
-                height: 24,
-                background: '#374151',
-                borderRadius: '4px',
-                color: 'white',
-                flexShrink: 0
-              }}>
-                <FilterListIcon sx={{ fontSize: '0.9rem' }} />
-              </Box>
-              <Box sx={{ minWidth: 0, flex: 1, textAlign: 'left' }}>
-                <Typography variant="caption" sx={{ 
-                  color: '#6b7280',
-                  fontWeight: 500,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
-                  fontSize: '0.65rem',
-                  display: 'block',
-                  mb: 0.5,
-                  fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
-                }}>
-                  Team Member
-                </Typography>
-                <FormControl size="small" sx={{ width: '100%' }}>
-                  <Select
-                    value={selectedMember}
-                    onChange={(e) => setSelectedMember(e.target.value)}
-                    disabled={selectedTeam !== 'all' && Object.keys(filteredMemberData).length === 0}
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        '& fieldset': { border: 'none' },
-                        '&:hover fieldset': { border: 'none' },
-                        '&.Mui-focused fieldset': { border: 'none' },
-                        background: 'transparent',
-                        fontWeight: 500,
-                        color: selectedTeam !== 'all' && Object.keys(filteredMemberData).length === 0 ? '#94a3b8' : '#1f2937',
-                        width: '100%',
-                        textAlign: 'left',
-                        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
-                      },
-                      '& .MuiSelect-select': {
-                        py: 0.5,
-                        px: 1,
-                        width: '100%',
-                        textOverflow: 'ellipsis',
-                        overflow: 'hidden',
-                        whiteSpace: 'nowrap',
-                        textAlign: 'left',
-                        justifyContent: 'flex-start',
-                        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
-                      }
-                    }}
-                  >
-                    <MenuItem value="all" sx={{ 
-                      fontWeight: 500, 
-                      textAlign: 'left',
-                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
-                    }}>
-                      All Members ({data.length})
-                    </MenuItem>
-                    {Object.values(filteredMemberData).map((member) => (
-                      <MenuItem 
-                        key={member.name} 
-                        value={member.name}
-                        sx={{ 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          gap: 2,
-                          fontWeight: 500,
-                          fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, sans-serif'
-                        }}
-                      >
-                        <Avatar 
-                          sx={{ 
-                            bgcolor: getTeamColor(member.team),
-                            width: 24, 
-                            height: 24,
-                            fontSize: '0.75rem',
-                            fontWeight: 700,
-                            flexShrink: 0
-                          }}
-                        >
-                          {member.name.charAt(0)}
-                        </Avatar>
-                        <Box sx={{ minWidth: 0, flex: 1 }}>
-                          <Typography variant="body2" sx={{ 
-                            fontWeight: 600, 
-                            color: '#1e293b',
-                            textOverflow: 'ellipsis',
-                            overflow: 'hidden',
-                            whiteSpace: 'nowrap',
-                            fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, sans-serif'
-                          }}>
-                            {member.name}
-                          </Typography>
-                          <Typography variant="caption" sx={{ 
-                            color: '#64748b',
-                            textOverflow: 'ellipsis',
-                            overflow: 'hidden',
-                            whiteSpace: 'nowrap',
-                            fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, sans-serif'
-                          }}>
-                            {formatTeamName(member.team)} • {member.meetings.length} meetings
-                          </Typography>
-                        </Box>
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
-            </Box>
+                  height: { xs: 40, sm: 36 }
+                }}
+              >
+                <MenuItem value="all">All Teams ({uniqueTeams.length})</MenuItem>
+                {uniqueTeams.map((team) => (
+                  <MenuItem key={team} value={team}>
+                    {formatTeamName(team)}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Box>
 
-          {/* Right side - Results Summary */}
           <Box sx={{ 
             display: 'flex', 
             alignItems: 'center', 
-            gap: 2,
-            px: 2,
-            py: 1.5,
-            background: '#f9fafb',
-            borderRadius: 1,
-            border: '1px solid #d1d5db',
-            minWidth: 'fit-content'
+            gap: 0.75, 
+            background: '#ffffff', 
+            borderRadius: 1.5, 
+            border: '1px solid #e5e7eb', 
+            px: 1, 
+            width: { xs: '100%', sm: 'auto' },
+            minWidth: { xs: 0, sm: 180 }
           }}>
-            <Box sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center',
-              width: 24,
-              height: 24,
-              background: '#374151',
-              borderRadius: '4px',
-              color: 'white'
-            }}>
-              <Typography variant="caption" sx={{ 
-                fontWeight: 600, 
-                fontSize: '0.65rem',
-                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
-              }}>
-                {Object.keys(filteredMemberData).length}
-              </Typography>
-            </Box>
-            <Box>
-              <Typography variant="body2" sx={{ 
-                color: '#1f2937',
-                fontWeight: 500,
-                fontSize: '0.85rem',
-                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
-              }}>
-                {Object.keys(filteredMemberData).length === 1 ? 'Member' : 'Members'} Displayed
-              </Typography>
-              <Typography variant="caption" sx={{ 
-                color: '#6b7280',
-                fontWeight: 400,
-                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
-              }}>
-                {selectedTeam !== 'all' && `from ${formatTeamName(selectedTeam)}`}
-                {selectedMember !== 'all' && `: ${selectedMember}`}
-                {selectedTeam === 'all' && selectedMember === 'all' && 'across all teams'}
-              </Typography>
-            </Box>
+            <FilterListIcon sx={{ fontSize: { xs: 14, sm: 16 }, color: '#6b7280', flexShrink: 0 }} />
+            <FormControl size="small" sx={{ flex: 1, minWidth: 0 }}>
+              <Select
+                value={selectedMember}
+                onChange={(e) => setSelectedMember(e.target.value)}
+                disabled={selectedTeam !== 'all' && Object.keys(filteredMemberData).length === 0}
+                sx={{
+                  border: 'none',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    border: 'none'
+                  },
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    border: 'none'
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    border: 'none'
+                  },
+                  fontSize: { xs: '0.75rem', sm: '0.8125rem' },
+                  fontWeight: 500,
+                  height: { xs: 40, sm: 36 }
+                }}
+              >
+                <MenuItem value="all">All Members ({data.length})</MenuItem>
+                {Object.values(filteredMemberData).map((member) => (
+                  <MenuItem key={member.name} value={member.name}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%' }}>
+                      <Avatar 
+                        sx={{ 
+                          bgcolor: getTeamColor(member.team),
+                          width: 20, 
+                          height: 20,
+                          fontSize: '0.7rem',
+                          fontWeight: 600
+                        }}
+                      >
+                        {member.name.charAt(0)}
+                      </Avatar>
+                      <Typography variant="body2" sx={{ fontSize: { xs: '0.75rem', sm: '0.8125rem' }, fontWeight: 500 }}>
+                        {member.name}
+                      </Typography>
+                    </Box>
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Box>
+
+          {/* Mobile-Optimized Summary */}
+          <Chip
+            label={`${Object.keys(filteredMemberData).length} ${Object.keys(filteredMemberData).length === 1 ? 'member' : 'members'}`}
+            size="small"
+            sx={{
+              height: { xs: 40, sm: 36 },
+              fontWeight: 600,
+              fontSize: { xs: '0.75rem', sm: '0.8125rem' },
+              background: '#ffffff',
+              border: '1px solid #e5e7eb',
+              color: '#374151',
+              width: { xs: '100%', sm: 'auto' },
+              justifyContent: { xs: 'center', sm: 'flex-start' }
+            }}
+          />
         </Box>
       </Box>
 
-      {/* Week Navigation */}
+      {/* Mobile-Optimized Week Navigation */}
       <Box sx={{ 
-        mb: 3, 
+        mb: 2, 
         display: 'flex', 
-        alignItems: 'center', 
+        flexDirection: { xs: 'column', sm: 'row' },
+        alignItems: { xs: 'stretch', sm: 'center' },
         justifyContent: 'space-between',
-        background: '#ffffff',
-        p: 2,
-        borderRadius: 1,
-        border: '1px solid #d1d5db',
-        boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+        gap: { xs: 1, sm: 0 },
+        background: '#f9fafb',
+        p: { xs: 1.25, sm: 1 },
+        borderRadius: 1.5,
+        border: '1px solid #e5e7eb'
       }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between',
+          gap: 0.5,
+          width: { xs: '100%', sm: 'auto' }
+        }}>
           <IconButton 
             onClick={goToPreviousWeek}
             size="small"
             sx={{ 
               color: '#6b7280',
+              p: { xs: 1, sm: 0.75 },
+              minWidth: { xs: 44, sm: 'auto' },
+              minHeight: { xs: 44, sm: 'auto' },
               '&:hover': { 
-                background: '#f3f4f6',
-                color: '#374151'
+                background: '#ffffff',
+                color: '#111827'
               }
             }}
           >
-            <ChevronLeftIcon />
+            <ChevronLeftIcon sx={{ fontSize: { xs: 22, sm: 20 } }} />
           </IconButton>
           
-          <Typography variant="h6" sx={{ 
-            fontWeight: 500, 
-            color: '#1f2937',
-            minWidth: 180,
+          <Typography variant="body1" sx={{ 
+            fontWeight: 600, 
+            color: '#111827',
+            minWidth: { xs: 0, sm: 160 },
             textAlign: 'center',
+            fontSize: { xs: '0.8125rem', sm: '0.875rem' },
             fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
-            letterSpacing: '-0.01em'
+            flex: { xs: 1, sm: 'none' }
           }}>
             {weekStart.toLocaleDateString('en-US', { 
-              month: 'long', 
+              month: 'short', 
               year: 'numeric' 
             })}
           </Typography>
@@ -691,94 +510,91 @@ const MemberCalendar = ({ data }) => {
             size="small"
             sx={{ 
               color: '#6b7280',
+              p: { xs: 1, sm: 0.75 },
+              minWidth: { xs: 44, sm: 'auto' },
+              minHeight: { xs: 44, sm: 'auto' },
               '&:hover': { 
-                background: '#f3f4f6',
-                color: '#374151'
+                background: '#ffffff',
+                color: '#111827'
               }
             }}
           >
-            <ChevronRightIcon />
+            <ChevronRightIcon sx={{ fontSize: { xs: 22, sm: 20 } }} />
           </IconButton>
         </Box>
         
         <Button
-          variant="outlined"
+          variant="text"
           size="small"
-          startIcon={<TodayIcon />}
+          startIcon={<TodayIcon sx={{ fontSize: { xs: 18, sm: 16 } }} />}
           onClick={goToCurrentWeek}
           sx={{ 
-            borderColor: '#d1d5db',
-            color: '#374151',
-            fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+            color: '#6b7280',
+            fontSize: { xs: '0.8125rem', sm: '0.75rem' },
             fontWeight: 500,
-            fontSize: '0.875rem',
+            px: { xs: 2, sm: 1.5 },
+            py: { xs: 1, sm: 0.5 },
+            minWidth: { xs: '100%', sm: 'auto' },
+            minHeight: { xs: 44, sm: 'auto' },
             '&:hover': {
-              borderColor: '#9ca3af',
-              background: '#f9fafb'
+              background: '#ffffff',
+              color: '#111827'
             }
           }}
         >
-          Current Week
+          Today
         </Button>
       </Box>
       
       {/* Conditional Rendering based on view mode */}
       {viewMode === 'calendar' ? (
-        /* Weekly Calendar Table */
+        /* Compact Weekly Calendar Table */
       <Card sx={{ 
-        borderRadius: 1,
-        border: '1px solid #d1d5db',
+        borderRadius: 2,
+        border: '1px solid #e5e7eb',
         background: '#ffffff',
-        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
         overflow: 'hidden'
       }}>
-        <TableContainer sx={{ maxHeight: { xs: 'auto', md: 600 }, overflowX: { xs: 'auto', md: 'hidden' } }}>
+        <TableContainer sx={{ maxHeight: { xs: 'auto', md: 700 }, overflowX: { xs: 'auto', md: 'hidden' } }}>
           <Table stickyHeader sx={{ tableLayout: 'fixed', width: '100%' }}>
             <TableHead>
               <TableRow sx={{ background: '#f9fafb' }}>
-                {/* Team Member Column */}
+                {/* Mobile-Optimized Team Member Column */}
                 <TableCell sx={{ 
-                  minWidth: { xs: 200, md: 250 }, 
-                  width: { xs: 200, md: 250 },
-                  background: '#f3f4f6',
-                  borderRight: '2px solid #d1d5db',
+                  minWidth: { xs: 140, sm: 180, md: 220 }, 
+                  width: { xs: 140, sm: 180, md: 220 },
+                  background: '#f9fafb',
+                  borderRight: '1px solid #e5e7eb',
                   fontWeight: 600,
-                  color: '#374151',
-                  fontSize: { xs: '0.9rem', md: '0.95rem' },
-                  py: { xs: 2, md: 2.5 },
+                  color: '#111827',
+                  fontSize: { xs: '0.75rem', sm: '0.8125rem' },
+                  py: { xs: 1, sm: 1.25 },
+                  px: { xs: 1, sm: 1.5 },
                   position: 'sticky',
                   left: 0,
                   zIndex: 3,
-                  fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
-                  '&::after': {
-                    content: '""',
-                    position: 'absolute',
-                    top: 0,
-                    right: 0,
-                    bottom: 0,
-                    width: '2px',
-                    background: 'linear-gradient(to right, transparent, rgba(0,0,0,0.1))',
-                    pointerEvents: 'none'
-                  }
+                  fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
                 }}>
-                  Team Members
+                  <Box sx={{ display: { xs: 'none', sm: 'block' } }}>Team Members</Box>
+                  <Box sx={{ display: { xs: 'block', sm: 'none' } }}>Members</Box>
                 </TableCell>
                 
-                {/* Day Columns */}
+                {/* Mobile-Optimized Day Columns */}
                 {weekDays.map((day, index) => (
                   <TableCell 
                     key={index}
                     align="center"
                     sx={{ 
-                      minWidth: { xs: 120, md: 140 },
-                      width: { xs: 120, md: 140 },
-                      background: isToday(day) ? '#f0f9ff' : '#ffffff',
-                      borderLeft: index === 0 ? '1px solid #d1d5db' : '1px solid #e5e7eb',
-                      borderRight: '1px solid #d1d5db',
+                      minWidth: { xs: 100, sm: 110, md: 130 },
+                      width: { xs: 100, sm: 110, md: 130 },
+                      background: isToday(day) ? '#eff6ff' : '#ffffff',
+                      borderLeft: index === 0 ? '1px solid #e5e7eb' : 'none',
+                      borderRight: '1px solid #e5e7eb',
                       fontWeight: 600,
-                      color: isToday(day) ? '#1e40af' : '#374151',
-                      fontSize: { xs: '0.85rem', md: '0.9rem' },
-                      py: { xs: 2, md: 2.5 },
+                      color: isToday(day) ? '#2563eb' : '#374151',
+                      fontSize: { xs: '0.6875rem', sm: '0.75rem' },
+                      py: { xs: 0.75, sm: 1 },
+                      px: { xs: 0.5, sm: 1 },
                       position: 'sticky',
                       top: 0,
                       zIndex: 2,
@@ -786,37 +602,34 @@ const MemberCalendar = ({ data }) => {
                     }}
                   >
                     <Box>
-                      <Typography variant="h6" sx={{ 
-                        fontWeight: 600,
+                      <Typography variant="body2" sx={{ 
+                        fontWeight: 700,
                         color: 'inherit',
                         mb: 0.25,
-                        fontSize: '0.8rem',
+                        fontSize: { xs: '0.6875rem', sm: '0.75rem' },
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
                         fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
                       }}>
                         {day.toLocaleDateString('en-US', { weekday: 'short' })}
                       </Typography>
                       <Typography variant="body2" sx={{ 
-                        color: isToday(day) ? '#1e40af' : '#6b7280',
-                        fontWeight: 500,
-                        fontSize: '0.75rem',
+                        color: isToday(day) ? '#2563eb' : '#6b7280',
+                        fontWeight: 600,
+                        fontSize: { xs: '0.75rem', sm: '0.8125rem' },
                         fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
                       }}>
                         {day.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                       </Typography>
                       {isToday(day) && (
-                        <Chip 
-                          label="Today" 
-                          size="small" 
-                          sx={{ 
-                            mt: 0.5,
-                            bgcolor: '#1e40af',
-                            color: 'white',
-                            fontWeight: 500,
-                            fontSize: '0.6rem',
-                            height: 20,
-                            fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
-                          }}
-                        />
+                        <Box sx={{ 
+                          mt: 0.25,
+                          display: 'inline-block',
+                          width: 4,
+                          height: 4,
+                          borderRadius: '50%',
+                          bgcolor: '#2563eb'
+                        }} />
                       )}
                     </Box>
                   </TableCell>
@@ -839,45 +652,34 @@ const MemberCalendar = ({ data }) => {
                     borderBottom: '1px solid #e5e7eb'
                   }}
                 >
-                  {/* Team Member Info */}
+                  {/* Mobile-Optimized Team Member Info */}
                   <TableCell 
                     className="member-info"
                     sx={{ 
-                      background: memberIndex % 2 === 0 ? '#fafbfc' : '#f3f4f6',
-                      borderRight: '2px solid #d1d5db',
-                      py: { xs: 2, md: 2.5 },
+                      background: '#f9fafb',
+                      borderRight: '1px solid #e5e7eb',
+                      py: { xs: 1, sm: 1.25 },
+                      px: { xs: 1, sm: 1.5 },
                       transition: 'background-color 0.2s ease',
                       position: 'sticky',
                       left: 0,
-                      zIndex: 1,
-                      '&::after': {
-                        content: '""',
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        bottom: 0,
-                        width: '2px',
-                        background: 'linear-gradient(to right, transparent, rgba(0,0,0,0.1))',
-                        pointerEvents: 'none'
-                      }
+                      zIndex: 1
                     }}
                   >
                     <Box sx={{ 
                       display: 'flex', 
                       alignItems: 'center', 
-                      gap: 1.5,
+                      gap: { xs: 0.75, sm: 1 },
                       width: '100%',
                       overflow: 'hidden'
                     }}>
                       <Avatar 
                         sx={{ 
                           bgcolor: getTeamColor(member.team),
-                          width: { xs: 36, md: 40 }, 
-                          height: { xs: 36, md: 40 },
-                          fontSize: { xs: '0.9rem', md: '1rem' },
+                          width: { xs: 28, sm: 32 }, 
+                          height: { xs: 28, sm: 32 },
+                          fontSize: { xs: '0.75rem', sm: '0.8125rem' },
                           fontWeight: 600,
-                          border: '2px solid #ffffff',
-                          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
                           flexShrink: 0
                         }}
                       >
@@ -886,14 +688,21 @@ const MemberCalendar = ({ data }) => {
                       <Box sx={{ 
                         minWidth: 0,
                         flex: 1,
-                        overflow: 'hidden'
+                        overflow: 'hidden',
+                        display: { xs: 'flex', sm: 'block' },
+                        flexDirection: { xs: 'column', sm: 'row' },
+                        gap: { xs: 0.25, sm: 0 }
                       }}>
-                        <Typography variant="h6" sx={{ 
+                        <Typography variant="body2" sx={{ 
                           fontWeight: 600,
-                          color: '#1f2937',
-                          mb: 0.25,
-                          fontSize: { xs: '0.95rem', md: '1rem' },
-                          fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
+                          color: '#111827',
+                          mb: { xs: 0, sm: 0.25 },
+                          fontSize: { xs: '0.75rem', sm: '0.8125rem' },
+                          lineHeight: 1.2,
+                          fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap'
                         }}>
                           {member.name}
                         </Typography>
@@ -903,29 +712,20 @@ const MemberCalendar = ({ data }) => {
                           sx={{ 
                             bgcolor: getTeamColor(member.team),
                             color: 'white',
-                            fontWeight: 500,
-                            fontSize: '0.65rem',
-                            px: 0.75,
-                            py: 0.25,
-                            height: 22,
-                            fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
+                            fontWeight: 600,
+                            fontSize: { xs: '0.5625rem', sm: '0.625rem' },
+                            px: { xs: 0.375, sm: 0.5 },
+                            py: 0,
+                            height: { xs: 16, sm: 18 },
+                            fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+                            display: { xs: 'none', sm: 'inline-flex' }
                           }}
                         />
-                        <Typography variant="caption" sx={{ 
-                          display: 'block',
-                          color: '#6b7280',
-                          fontWeight: 400,
-                          mt: 0.25,
-                          fontSize: '0.7rem',
-                          fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
-                        }}>
-                          {member.meetings.length} meetings
-                        </Typography>
                       </Box>
                     </Box>
                   </TableCell>
                   
-                  {/* Day Cells */}
+                  {/* Mobile-Optimized Day Cells */}
                   {weekDays.map((day, dayIndex) => {
                     const dayMeetings = getMeetingsForDay(member, day);
                     
@@ -933,64 +733,72 @@ const MemberCalendar = ({ data }) => {
                       <TableCell 
                         key={dayIndex}
                         sx={{ 
-                          minWidth: { xs: 120, md: 140 },
-                          width: { xs: 120, md: 140 },
-                          borderLeft: dayIndex === 0 ? '1px solid #d1d5db' : '1px solid #e5e7eb',
-                          borderRight: '1px solid #d1d5db',
-                          py: { xs: 1.5, md: 2 },
+                          minWidth: { xs: 100, sm: 110, md: 130 },
+                          width: { xs: 100, sm: 110, md: 130 },
+                          borderRight: '1px solid #e5e7eb',
+                          py: { xs: 0.75, sm: 1 },
+                          px: { xs: 0.5, sm: 0.75 },
                           verticalAlign: 'top',
-                          background: memberIndex % 2 === 0 ? '#ffffff' : '#fafbfc'
+                          background: '#ffffff'
                         }}
                       >
                         {dayMeetings.length === 0 ? (
-                          <Typography variant="body2" sx={{ 
-                            color: '#9ca3af',
-                            fontStyle: 'italic',
-                            textAlign: 'center',
-                            py: { xs: 2, md: 2.5 },
-                            fontSize: '0.8rem',
-                            fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
+                          <Box sx={{ 
+                            height: { xs: 16, sm: 20 },
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
                           }}>
-                            No meetings
-                          </Typography>
+                            <Box sx={{ 
+                              width: 3,
+                              height: 3,
+                              borderRadius: '50%',
+                              backgroundColor: '#e5e7eb'
+                            }} />
+                          </Box>
                         ) : (
-                          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                          <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 0.5, sm: 0.75 } }}>
                             {dayMeetings.map((meeting, meetingIndex) => (
                               <Box 
                                 key={meetingIndex}
                                 sx={{ 
-                                  p: 1.25,
-                                  background: `${getTeamColor(member.team)}08`,
-                                  border: `1px solid ${getTeamColor(member.team)}20`,
-                                  borderRadius: 1,
+                                  p: { xs: 0.5, sm: 0.75 },
+                                  background: `${getTeamColor(member.team)}0d`,
+                                  borderLeft: `2px solid ${getTeamColor(member.team)}`,
+                                  borderRadius: 0.5,
+                                  cursor: 'pointer',
                                   '&:hover': {
-                                    background: `${getTeamColor(member.team)}12`,
-                                    borderColor: `${getTeamColor(member.team)}30`,
-                                    transform: 'translateY(-1px)',
-                                    boxShadow: `0 1px 3px ${getTeamColor(member.team)}15`
+                                    background: `${getTeamColor(member.team)}15`,
+                                    transform: 'translateX(2px)'
                                   },
-                                  transition: 'all 0.2s ease'
+                                  transition: 'all 0.15s ease'
                                 }}
                               >
                                 <Typography variant="caption" sx={{ 
                                   color: getTeamColor(member.team),
-                                  fontWeight: 600,
+                                  fontWeight: 700,
                                   display: 'block',
                                   mb: 0.25,
-                                  fontSize: '0.65rem',
+                                  fontSize: { xs: '0.5625rem', sm: '0.625rem' },
+                                  lineHeight: 1.2,
                                   fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
                                 }}>
                                   {meeting.time}
                                 </Typography>
                                 <Typography variant="body2" sx={{ 
                                   color: '#374151',
-                                  fontSize: '0.75rem',
+                                  fontSize: { xs: '0.625rem', sm: '0.6875rem' },
                                   lineHeight: 1.3,
-                                  fontWeight: 400,
-                                  fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
+                                  fontWeight: 500,
+                                  fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  display: '-webkit-box',
+                                  WebkitLineClamp: { xs: 1, sm: 2 },
+                                  WebkitBoxOrient: 'vertical'
                                 }}>
-                                  {meeting.fullText.length > 45 
-                                    ? `${meeting.fullText.substring(0, 45)}...` 
+                                  {meeting.fullText.length > 50 
+                                    ? `${meeting.fullText.substring(0, 50)}...` 
                                     : meeting.fullText
                                   }
                                 </Typography>
@@ -1008,124 +816,131 @@ const MemberCalendar = ({ data }) => {
         </TableContainer>
       </Card>
       ) : (
-        /* List View */
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-          {/* Header */}
+        /* Mobile-Optimized List View */
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 1.5, sm: 2 } }}>
+          {/* Mobile-Optimized Header */}
           <Box sx={{ 
             display: 'flex', 
+            flexDirection: { xs: 'column', sm: 'row' },
             justifyContent: 'space-between', 
-            alignItems: 'center',
-            px: 3,
-            py: 2,
-            background: '#ffffff',
-            borderRadius: 1,
-            border: '1px solid #d1d5db',
-            boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            gap: { xs: 1, sm: 0 },
+            px: { xs: 1.5, sm: 2 },
+            py: { xs: 1, sm: 1.25 },
+            background: '#f9fafb',
+            borderRadius: 1.5,
+            border: '1px solid #e5e7eb'
           }}>
-            <Typography variant="h6" sx={{ 
+            <Typography variant="body1" sx={{ 
               fontWeight: 600,
-              color: '#1f2937',
+              color: '#111827',
+              fontSize: { xs: '0.8125rem', sm: '0.875rem' },
               fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
             }}>
-              Team Schedule - {weekStart.toLocaleDateString('en-US', { 
-                month: 'long', 
+              {weekStart.toLocaleDateString('en-US', { 
+                month: 'short', 
                 year: 'numeric' 
-              })}
+              })} Schedule
             </Typography>
-            <Typography variant="body2" sx={{ 
-              color: '#6b7280',
-              fontWeight: 500,
-              fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
-            }}>
-              {Object.keys(filteredMemberData).length} team members
-            </Typography>
+            <Chip
+              label={`${Object.keys(filteredMemberData).length} ${Object.keys(filteredMemberData).length === 1 ? 'member' : 'members'}`}
+              size="small"
+              sx={{
+                height: { xs: 28, sm: 24 },
+                fontWeight: 600,
+                fontSize: { xs: '0.6875rem', sm: '0.75rem' },
+                background: '#ffffff',
+                border: '1px solid #e5e7eb',
+                color: '#374151'
+              }}
+            />
           </Box>
           
-          {/* Team Members List */}
+          {/* Compact Team Members List */}
           {Object.values(filteredMemberData).map((member) => (
             <Card key={member.name} sx={{ 
-              borderRadius: 1,
-              border: '1px solid #d1d5db',
+              borderRadius: 2,
+              border: '1px solid #e5e7eb',
               background: '#ffffff',
-              boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
               overflow: 'hidden',
               '&:hover': {
-                boxShadow: '0 4px 12px 0 rgba(0, 0, 0, 0.15)',
-                transform: 'translateY(-1px)'
+                borderColor: '#d1d5db',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)'
               },
               transition: 'all 0.2s ease'
             }}>
-              {/* Member Header */}
+              {/* Mobile-Optimized Member Header */}
               <Box sx={{ 
-                p: 3,
-                background: 'linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%)',
+                p: { xs: 1.25, sm: 1.5 },
+                background: '#f9fafb',
                 borderBottom: '1px solid #e5e7eb'
               }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                    <Avatar 
-                      sx={{ 
-                        bgcolor: getTeamColor(member.team),
-                        width: 48, 
-                        height: 48,
-                        fontSize: '1.1rem',
-                        fontWeight: 600,
-                        border: '3px solid #ffffff',
-                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)'
-                      }}
-                    >
-                      {member.name.charAt(0)}
-                    </Avatar>
-                    <Box>
-                      <Typography variant="h6" sx={{ 
-                        fontWeight: 600,
-                        color: '#1f2937',
-                        fontSize: '1.2rem',
-                        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
-                        mb: 0.5
-                      }}>
-                        {member.name}
-                      </Typography>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Chip 
-                          label={formatTeamName(member.team)} 
-                          size="small" 
-                          sx={{ 
-                            bgcolor: getTeamColor(member.team),
-                            color: 'white',
-                            fontWeight: 600,
-                            fontSize: '0.75rem',
-                            height: 26,
-                            px: 1.5,
-                            fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
-                          }}
-                        />
-                        <Typography variant="body2" sx={{ 
-                          color: '#6b7280',
-                          fontWeight: 500,
-                          fontSize: '0.85rem',
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, sm: 1.5 } }}>
+                  <Avatar 
+                    sx={{ 
+                      bgcolor: getTeamColor(member.team),
+                      width: { xs: 32, sm: 36 }, 
+                      height: { xs: 32, sm: 36 },
+                      fontSize: { xs: '0.8125rem', sm: '0.875rem' },
+                      fontWeight: 600,
+                      flexShrink: 0
+                    }}
+                  >
+                    {member.name.charAt(0)}
+                  </Avatar>
+                  <Box sx={{ flex: 1, minWidth: 0 }}>
+                    <Typography variant="body1" sx={{ 
+                      fontWeight: 600,
+                      color: '#111827',
+                      fontSize: { xs: '0.8125rem', sm: '0.875rem' },
+                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+                      mb: 0.25,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap'
+                    }}>
+                      {member.name}
+                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.75, sm: 1 }, flexWrap: 'wrap' }}>
+                      <Chip 
+                        label={formatTeamName(member.team)} 
+                        size="small" 
+                        sx={{ 
+                          bgcolor: getTeamColor(member.team),
+                          color: 'white',
+                          fontWeight: 600,
+                          fontSize: { xs: '0.5625rem', sm: '0.625rem' },
+                          height: { xs: 16, sm: 18 },
+                          px: { xs: 0.375, sm: 0.5 },
                           fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
-                        }}>
-                          {member.meetings.length} meetings scheduled
-                        </Typography>
-                      </Box>
+                        }}
+                      />
+                      <Typography variant="caption" sx={{ 
+                        color: '#6b7280',
+                        fontWeight: 500,
+                        fontSize: { xs: '0.625rem', sm: '0.6875rem' },
+                        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
+                      }}>
+                        {member.meetings.length} meetings
+                      </Typography>
                     </Box>
                   </Box>
                   
-                  {/* Meeting Count Badge */}
+                  {/* Mobile-Optimized Meeting Count Badge */}
                   <Box sx={{ 
                     display: 'flex', 
                     alignItems: 'center', 
                     justifyContent: 'center',
-                    width: 40,
-                    height: 40,
+                    minWidth: { xs: 24, sm: 28 },
+                    height: { xs: 24, sm: 28 },
                     background: getTeamColor(member.team),
-                    borderRadius: '50%',
-                    color: 'white'
+                    borderRadius: 1,
+                    color: 'white',
+                    flexShrink: 0
                   }}>
-                    <Typography variant="h6" sx={{ 
+                    <Typography variant="caption" sx={{ 
                       fontWeight: 700,
-                      fontSize: '1rem',
+                      fontSize: { xs: '0.6875rem', sm: '0.75rem' },
                       fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
                     }}>
                       {member.meetings.length}
@@ -1134,153 +949,146 @@ const MemberCalendar = ({ data }) => {
                 </Box>
               </Box>
               
-              {/* Meetings Timeline */}
-              <Box sx={{ p: 3 }}>
+              {/* Mobile-Optimized Meetings Timeline */}
+              <Box sx={{ p: { xs: 1.25, sm: 1.5 } }}>
                 {weekDays.map((day, dayIndex) => {
                   const dayMeetings = getMeetingsForDay(member, day);
                   
                   return (
-                    <Box key={dayIndex} sx={{ mb: 3 }}>
-                      {/* Day Header */}
+                    <Box key={dayIndex} sx={{ mb: { xs: 1.5, sm: 2 } }}>
+                      {/* Mobile-Optimized Day Header */}
                       <Box sx={{ 
                         display: 'flex', 
                         alignItems: 'center', 
-                        gap: 2,
-                        mb: 2,
-                        pb: 1.5,
+                        gap: { xs: 0.75, sm: 1 },
+                        mb: { xs: 1, sm: 1.25 },
+                        pb: { xs: 0.75, sm: 1 },
                         borderBottom: '1px solid #f3f4f6'
                       }}>
-                        <Typography variant="subtitle1" sx={{ 
-                          fontWeight: 600,
-                          color: isToday(day) ? '#1e40af' : '#374151',
-                          fontSize: '0.95rem',
+                        <Typography variant="body2" sx={{ 
+                          fontWeight: 700,
+                          color: isToday(day) ? '#2563eb' : '#374151',
+                          fontSize: { xs: '0.6875rem', sm: '0.75rem' },
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.05em',
                           fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
-                          minWidth: '140px'
+                          minWidth: { xs: '80px', sm: '100px' }
                         }}>
                           {day.toLocaleDateString('en-US', { 
-                            weekday: 'long', 
+                            weekday: 'short', 
                             month: 'short', 
                             day: 'numeric' 
                           })}
                         </Typography>
                         {isToday(day) && (
-                          <Chip 
-                            label="Today" 
-                            size="small" 
-                            sx={{ 
-                              bgcolor: '#1e40af',
-                              color: 'white',
-                              fontWeight: 600,
-                              fontSize: '0.65rem',
-                              height: 20,
-                              fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
-                            }}
-                          />
+                          <Box sx={{ 
+                            width: 4,
+                            height: 4,
+                            borderRadius: '50%',
+                            bgcolor: '#2563eb',
+                            flexShrink: 0
+                          }} />
                         )}
                         <Box sx={{ 
                           flex: 1,
                           height: '1px',
-                          background: 'linear-gradient(90deg, #e5e7eb 0%, transparent 100%)'
+                          background: '#e5e7eb'
                         }} />
                         <Typography variant="caption" sx={{ 
                           color: '#9ca3af',
                           fontWeight: 500,
-                          fontSize: '0.75rem',
-                          fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
+                          fontSize: { xs: '0.625rem', sm: '0.6875rem' },
+                          fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+                          flexShrink: 0
                         }}>
-                          {dayMeetings.length} meeting{dayMeetings.length !== 1 ? 's' : ''}
+                          {dayMeetings.length}
                         </Typography>
                       </Box>
                       
-                      {/* Meetings */}
+                      {/* Mobile-Optimized Meetings */}
                       {dayMeetings.length === 0 ? (
                         <Box sx={{ 
                           display: 'flex', 
                           alignItems: 'center', 
-                          gap: 2,
-                          py: 2,
-                          px: 3,
-                          background: '#f9fafb',
-                          borderRadius: 1,
-                          border: '1px solid #f3f4f6'
+                          gap: { xs: 0.75, sm: 1 },
+                          py: { xs: 0.75, sm: 1 },
+                          px: { xs: 1, sm: 1.5 }
                         }}>
                           <Box sx={{ 
-                            width: 8,
-                            height: 8,
+                            width: 3,
+                            height: 3,
                             borderRadius: '50%',
-                            backgroundColor: '#d1d5db'
+                            backgroundColor: '#e5e7eb'
                           }} />
-                          <Typography variant="body2" sx={{ 
+                          <Typography variant="caption" sx={{ 
                             color: '#9ca3af',
                             fontStyle: 'italic',
-                            fontSize: '0.9rem',
+                            fontSize: { xs: '0.625rem', sm: '0.6875rem' },
                             fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
                           }}>
-                            No meetings scheduled
+                            No meetings
                           </Typography>
                         </Box>
                       ) : (
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 0.75, sm: 1 } }}>
                           {dayMeetings.map((meeting, meetingIndex) => (
                             <Box 
                               key={meetingIndex}
                               sx={{ 
                                 display: 'flex',
                                 alignItems: 'flex-start',
-                                gap: 3,
-                                p: 3,
-                                background: `${getTeamColor(member.team)}08`,
-                                border: `1px solid ${getTeamColor(member.team)}25`,
-                                borderRadius: 1,
+                                gap: { xs: 0.75, sm: 1 },
+                                p: { xs: 0.875, sm: 1 },
+                                pl: { xs: 1, sm: 1.25 },
+                                background: `${getTeamColor(member.team)}0d`,
+                                borderLeft: `2px solid ${getTeamColor(member.team)}`,
+                                borderRadius: 0.5,
+                                cursor: 'pointer',
                                 '&:hover': {
-                                  background: `${getTeamColor(member.team)}12`,
-                                  borderColor: `${getTeamColor(member.team)}35`,
-                                  transform: 'translateX(4px)'
+                                  background: `${getTeamColor(member.team)}15`,
+                                  transform: 'translateX(2px)'
                                 },
-                                transition: 'all 0.2s ease'
+                                transition: 'all 0.15s ease'
                               }}
                             >
-                              {/* Time Badge */}
+                              {/* Mobile-Optimized Time Badge */}
                               <Box sx={{ 
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                minWidth: 80,
-                                height: 32,
+                                minWidth: { xs: 48, sm: 56 },
+                                height: { xs: 22, sm: 24 },
                                 background: getTeamColor(member.team),
-                                borderRadius: 1,
-                                color: 'white'
+                                borderRadius: 0.5,
+                                color: 'white',
+                                flexShrink: 0
                               }}>
                                 <Typography variant="caption" sx={{ 
-                                  fontWeight: 600,
-                                  fontSize: '0.75rem',
+                                  fontWeight: 700,
+                                  fontSize: { xs: '0.5625rem', sm: '0.625rem' },
                                   fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
                                 }}>
                                   {meeting.time}
                                 </Typography>
                               </Box>
                               
-                              {/* Meeting Content */}
-                              <Box sx={{ flex: 1 }}>
-                                <Typography variant="body1" sx={{ 
-                                  color: '#1f2937',
-                                  fontSize: '0.95rem',
-                                  lineHeight: 1.5,
-                                  fontWeight: 400,
-                                  fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
+                              {/* Mobile-Optimized Meeting Content */}
+                              <Box sx={{ flex: 1, minWidth: 0 }}>
+                                <Typography variant="body2" sx={{ 
+                                  color: '#374151',
+                                  fontSize: { xs: '0.6875rem', sm: '0.75rem' },
+                                  lineHeight: 1.4,
+                                  fontWeight: 500,
+                                  fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  display: '-webkit-box',
+                                  WebkitLineClamp: { xs: 2, sm: 2 },
+                                  WebkitBoxOrient: 'vertical'
                                 }}>
                                   {meeting.fullText}
                                 </Typography>
                               </Box>
-                              
-                              {/* Team Color Indicator */}
-                              <Box sx={{ 
-                                width: 4,
-                                height: '100%',
-                                background: getTeamColor(member.team),
-                                borderRadius: '2px',
-                                opacity: 0.6
-                              }} />
                             </Box>
                           ))}
                         </Box>
@@ -1294,45 +1102,46 @@ const MemberCalendar = ({ data }) => {
           
           {Object.keys(filteredMemberData).length === 0 && (
             <Card sx={{ 
-              borderRadius: 1,
-              border: '1px solid #d1d5db',
-              background: '#ffffff',
-              boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
+              borderRadius: 2,
+              border: '1px solid #e5e7eb',
+              background: '#ffffff'
             }}>
               <Box sx={{ 
                 display: 'flex', 
                 flexDirection: 'column',
                 alignItems: 'center', 
-                py: 8,
-                px: 4
+                py: { xs: 4, sm: 6 },
+                px: { xs: 2, sm: 3 }
               }}>
                 <Box sx={{ 
-                  width: 64,
-                  height: 64,
+                  width: { xs: 40, sm: 48 },
+                  height: { xs: 40, sm: 48 },
                   borderRadius: '50%',
                   background: '#f3f4f6',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  mb: 3
+                  mb: { xs: 1.5, sm: 2 }
                 }}>
-                  <GroupIcon sx={{ fontSize: 32, color: '#9ca3af' }} />
+                  <GroupIcon sx={{ fontSize: { xs: 20, sm: 24 }, color: '#9ca3af' }} />
                 </Box>
-                <Typography variant="h6" sx={{ 
+                <Typography variant="body1" sx={{ 
                   fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
                   fontWeight: 600,
                   color: '#374151',
-                  mb: 1
+                  mb: 0.5,
+                  fontSize: { xs: '0.8125rem', sm: '0.875rem' }
                 }}>
                   No team members found
                 </Typography>
-                <Typography variant="body2" sx={{ 
+                <Typography variant="caption" sx={{ 
                   fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
                   color: '#6b7280',
                   textAlign: 'center',
-                  maxWidth: 300
+                  maxWidth: { xs: 240, sm: 280 },
+                  fontSize: { xs: '0.6875rem', sm: '0.75rem' }
                 }}>
-                  Try adjusting your filters to see more results or select a different team
+                  Try adjusting your filters to see more results
                 </Typography>
               </Box>
             </Card>
@@ -1340,27 +1149,33 @@ const MemberCalendar = ({ data }) => {
         </Box>
       )}
 
-      {/* Scroll to Top Button */}
+      {/* Mobile-Optimized Scroll to Top Button */}
       {showScrollTop && (
         <Fab
           color="primary"
           aria-label="scroll to top"
           onClick={scrollToTop}
+          size="small"
           sx={{
             position: 'fixed',
-            bottom: 24,
-            right: 24,
-            background: '#374151',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+            bottom: { xs: 16, sm: 20 },
+            right: { xs: 16, sm: 20 },
+            background: '#111827',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+            width: { xs: 44, sm: 40 },
+            height: { xs: 44, sm: 40 },
+            minWidth: { xs: 44, sm: 40 },
+            minHeight: { xs: 44, sm: 40 },
             '&:hover': {
               background: '#1f2937',
-              transform: 'translateY(-1px)',
-              boxShadow: '0 6px 16px rgba(0, 0, 0, 0.2)'
+              transform: 'translateY(-2px)',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)'
             },
-            transition: 'all 0.2s ease'
+            transition: 'all 0.2s ease',
+            zIndex: 1000
           }}
         >
-          <ArrowUpIcon />
+          <ArrowUpIcon sx={{ fontSize: { xs: 22, sm: 20 } }} />
         </Fab>
       )}
     </Box>
