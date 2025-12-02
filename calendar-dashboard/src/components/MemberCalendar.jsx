@@ -173,12 +173,36 @@ const MemberCalendar = ({ data }) => {
     return date.toDateString();
   };
 
-  // Get meetings for a specific member on a specific day
+  // Get meetings for a specific member on a specific day, sorted by time
   const getMeetingsForDay = (member, day) => {
     const dayString = formatDateForComparison(day);
-    return member.meetings.filter(meeting => 
+    const dayMeetings = member.meetings.filter(meeting => 
       formatDateForComparison(meeting.date) === dayString
     );
+    
+    // Sort meetings by time (ascending order)
+    return dayMeetings.sort((a, b) => {
+      // Parse time from meeting string (format: "9:30 AM" or "1:30 PM")
+      const parseTime = (timeStr) => {
+        if (!timeStr || timeStr === 'Unknown Time') return Infinity;
+        const match = timeStr.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+        if (!match) return Infinity;
+        
+        let hours = parseInt(match[1], 10);
+        const minutes = parseInt(match[2], 10);
+        const ampm = match[3].toUpperCase();
+        
+        // Convert to 24-hour format for comparison
+        if (ampm === 'PM' && hours !== 12) hours += 12;
+        if (ampm === 'AM' && hours === 12) hours = 0;
+        
+        return hours * 60 + minutes; // Convert to minutes for easy comparison
+      };
+      
+      const timeA = parseTime(a.time);
+      const timeB = parseTime(b.time);
+      return timeA - timeB;
+    });
   };
 
   const getTeamColor = (teamName) => {

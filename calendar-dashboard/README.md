@@ -1,8 +1,50 @@
-# React + Vite
+# Team Calendar Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, responsive calendar dashboard for viewing team schedules and meetings.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 📅 Weekly calendar view with team member schedules
+- 📋 List view for detailed meeting information
+- 🎨 Modern, compact UI design
+- 📱 Fully optimized for mobile devices
+- 🔍 Filter by team and team member
+- 🎯 Intuitive navigation and week selection
+
+## Getting Started
+
+### Installation
+
+```bash
+npm install
+```
+
+### Development
+
+```bash
+npm run dev
+```
+
+### Generate Dashboard Payload
+
+To generate or regenerate the dashboard payload data:
+
+```bash
+npm run generate:payload
+```
+
+This will generate a new `public/dashboard-payload.json` file with randomly generated meetings for all team members. The script creates meetings from November 15, 2025 to February 28, 2026.
+
+**Note:** This script is a temporary solution until the project is connected to a real API. Once connected, the API will provide the meeting data directly.
+
+### Build
+
+```bash
+npm run build
+```
+
+### Preview Production Build
+
+```bash
+npm run preview
+```
