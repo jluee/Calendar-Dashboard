@@ -10,7 +10,7 @@ function App() {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch('/dashboard-payload.json')
+        const res = await fetch('/data-payload.update.json')
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
         const json = await res.json()
         setData(json)

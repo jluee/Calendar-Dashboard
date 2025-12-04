@@ -115,19 +115,57 @@ const MemberCalendar = ({ data }) => {
       }
       
       // Process each meeting
-      member.meetings.forEach(meetingText => {
-        // Extract date and time from meeting text
-        const dateMatch = meetingText.match(/(\w+ \d{1,2}, \d{4})/);
-        const timeMatch = meetingText.match(/(\d{1,2}:\d{2} [AP]M)/);
+      member.meetings.forEach(meeting => {
+        let meetingData = {};
         
-        if (dateMatch) {
-          const meetingDate = new Date(dateMatch[1]);
-          memberData[memberName].meetings.push({
-            text: meetingText,
-            date: meetingDate,
-            time: timeMatch ? timeMatch[1] : 'Unknown Time',
-            fullText: meetingText
-          });
+        // Check if meeting is new object structure or old string structure
+        if (typeof meeting === 'object' && meeting !== null) {
+          // New structure: object with label, start, end, opportunities
+          const startDate = new Date(meeting.start);
+          
+          // Format time from start date
+          const timeOptions = { hour: 'numeric', minute: '2-digit', hour12: true };
+          const timeStr = startDate.toLocaleTimeString('en-US', timeOptions).replace(/\u202F/g, ' ');
+          
+          // Extract opportunity data (use first opportunity if multiple exist)
+          const opportunity = meeting.opportunities && meeting.opportunities.length > 0 
+            ? meeting.opportunities[0] 
+            : null;
+          
+          meetingData = {
+            text: meeting.label || '',
+            date: startDate,
+            time: timeStr,
+            fullText: meeting.label || '',
+            opportunityName: opportunity?.Name ?? null,
+            amount: opportunity?.Amount ?? null,
+            stageName: opportunity?.StageName ?? null,
+            probability: opportunity?.Probability ?? null
+          };
+        } else {
+          // Old structure: string format
+          const meetingText = meeting;
+          // Extract date and time from meeting text
+          const dateMatch = meetingText.match(/(\w+ \d{1,2}, \d{4})/);
+          const timeMatch = meetingText.match(/(\d{1,2}:\d{2} [AP]M)/);
+          
+          if (dateMatch) {
+            const meetingDate = new Date(dateMatch[1]);
+            meetingData = {
+              text: meetingText,
+              date: meetingDate,
+              time: timeMatch ? timeMatch[1] : 'Unknown Time',
+              fullText: meetingText,
+              opportunityName: null,
+              amount: null,
+              stageName: null,
+              probability: null
+            };
+          }
+        }
+        
+        if (meetingData.date) {
+          memberData[memberName].meetings.push(meetingData);
         }
       });
     });
@@ -786,7 +824,7 @@ const MemberCalendar = ({ data }) => {
                               <Box 
                                 key={meetingIndex}
                                 sx={{ 
-                                  p: { xs: 0.5, sm: 0.75 },
+                                  p: { xs: 0.75, sm: 1 },
                                   background: `${getTeamColor(member.team)}0d`,
                                   borderLeft: `2px solid ${getTeamColor(member.team)}`,
                                   borderRadius: 0.5,
@@ -802,7 +840,7 @@ const MemberCalendar = ({ data }) => {
                                   color: getTeamColor(member.team),
                                   fontWeight: 700,
                                   display: 'block',
-                                  mb: 0.25,
+                                  mb: 0.5,
                                   fontSize: { xs: '0.5625rem', sm: '0.625rem' },
                                   lineHeight: 1.2,
                                   fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
@@ -819,13 +857,105 @@ const MemberCalendar = ({ data }) => {
                                   textOverflow: 'ellipsis',
                                   display: '-webkit-box',
                                   WebkitLineClamp: { xs: 1, sm: 2 },
-                                  WebkitBoxOrient: 'vertical'
+                                  WebkitBoxOrient: 'vertical',
+                                  mb: 0.75
                                 }}>
                                   {meeting.fullText.length > 50 
                                     ? `${meeting.fullText.substring(0, 50)}...` 
                                     : meeting.fullText
                                   }
                                 </Typography>
+                                {/* Opportunity Details */}
+                                <Box sx={{ 
+                                  display: 'flex', 
+                                  flexDirection: 'column', 
+                                  gap: 0.25,
+                                  mt: 0.5,
+                                  pt: 0.5,
+                                  borderTop: '1px solid rgba(0, 0, 0, 0.08)'
+                                }}>
+                                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 0.5 }}>
+                                    <Typography variant="caption" sx={{ 
+                                      color: '#6b7280',
+                                      fontSize: { xs: '0.5rem', sm: '0.5625rem' },
+                                      fontWeight: 500,
+                                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+                                      flexShrink: 0
+                                    }}>
+                                      Opportunity:
+                                    </Typography>
+                                    <Typography variant="caption" sx={{ 
+                                      color: '#111827',
+                                      fontSize: { xs: '0.5rem', sm: '0.5625rem' },
+                                      fontWeight: 600,
+                                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+                                      textAlign: 'right',
+                                      wordBreak: 'break-word',
+                                      flex: 1,
+                                      minWidth: 0
+                                    }}>
+                                      {meeting.opportunityName || 'n/a'}
+                                    </Typography>
+                                  </Box>
+                                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <Typography variant="caption" sx={{ 
+                                      color: '#6b7280',
+                                      fontSize: { xs: '0.5rem', sm: '0.5625rem' },
+                                      fontWeight: 500,
+                                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
+                                    }}>
+                                      Amount:
+                                    </Typography>
+                                    <Typography variant="caption" sx={{ 
+                                      color: '#111827',
+                                      fontSize: { xs: '0.5rem', sm: '0.5625rem' },
+                                      fontWeight: 600,
+                                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
+                                    }}>
+                                      {meeting.amount !== null && meeting.amount !== undefined 
+                                        ? `$${meeting.amount.toLocaleString()}` 
+                                        : 'n/a'}
+                                    </Typography>
+                                  </Box>
+                                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <Typography variant="caption" sx={{ 
+                                      color: '#6b7280',
+                                      fontSize: { xs: '0.5rem', sm: '0.5625rem' },
+                                      fontWeight: 500,
+                                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
+                                    }}>
+                                      Stage:
+                                    </Typography>
+                                    <Typography variant="caption" sx={{ 
+                                      color: '#111827',
+                                      fontSize: { xs: '0.5rem', sm: '0.5625rem' },
+                                      fontWeight: 600,
+                                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
+                                    }}>
+                                      {meeting.stageName || 'n/a'}
+                                    </Typography>
+                                  </Box>
+                                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <Typography variant="caption" sx={{ 
+                                      color: '#6b7280',
+                                      fontSize: { xs: '0.5rem', sm: '0.5625rem' },
+                                      fontWeight: 500,
+                                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
+                                    }}>
+                                      Probability:
+                                    </Typography>
+                                    <Typography variant="caption" sx={{ 
+                                      color: '#111827',
+                                      fontSize: { xs: '0.5rem', sm: '0.5625rem' },
+                                      fontWeight: 600,
+                                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
+                                    }}>
+                                      {meeting.probability !== null && meeting.probability !== undefined 
+                                        ? `${meeting.probability}%` 
+                                        : 'n/a'}
+                                    </Typography>
+                                  </Box>
+                                </Box>
                               </Box>
                             ))}
                           </Box>
@@ -1108,10 +1238,102 @@ const MemberCalendar = ({ data }) => {
                                   textOverflow: 'ellipsis',
                                   display: '-webkit-box',
                                   WebkitLineClamp: { xs: 2, sm: 2 },
-                                  WebkitBoxOrient: 'vertical'
+                                  WebkitBoxOrient: 'vertical',
+                                  mb: 0.75
                                 }}>
                                   {meeting.fullText}
                                 </Typography>
+                                {/* Opportunity Details */}
+                                <Box sx={{ 
+                                  display: 'flex', 
+                                  flexDirection: 'column', 
+                                  gap: 0.25,
+                                  mt: 0.5,
+                                  pt: 0.5,
+                                  borderTop: '1px solid rgba(0, 0, 0, 0.08)'
+                                }}>
+                                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <Typography variant="caption" sx={{ 
+                                      color: '#6b7280',
+                                      fontSize: { xs: '0.5625rem', sm: '0.625rem' },
+                                      fontWeight: 500,
+                                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
+                                    }}>
+                                      Opportunity:
+                                    </Typography>
+                                    <Typography variant="caption" sx={{ 
+                                      color: '#111827',
+                                      fontSize: { xs: '0.5625rem', sm: '0.625rem' },
+                                      fontWeight: 600,
+                                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+                                      textAlign: 'right',
+                                      overflow: 'hidden',
+                                      textOverflow: 'ellipsis',
+                                      whiteSpace: 'nowrap',
+                                      maxWidth: { xs: '60%', sm: '70%' }
+                                    }}>
+                                      {meeting.opportunityName || 'n/a'}
+                                    </Typography>
+                                  </Box>
+                                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <Typography variant="caption" sx={{ 
+                                      color: '#6b7280',
+                                      fontSize: { xs: '0.5625rem', sm: '0.625rem' },
+                                      fontWeight: 500,
+                                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
+                                    }}>
+                                      Amount:
+                                    </Typography>
+                                    <Typography variant="caption" sx={{ 
+                                      color: '#111827',
+                                      fontSize: { xs: '0.5625rem', sm: '0.625rem' },
+                                      fontWeight: 600,
+                                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
+                                    }}>
+                                      {meeting.amount !== null && meeting.amount !== undefined 
+                                        ? `$${meeting.amount.toLocaleString()}` 
+                                        : 'n/a'}
+                                    </Typography>
+                                  </Box>
+                                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <Typography variant="caption" sx={{ 
+                                      color: '#6b7280',
+                                      fontSize: { xs: '0.5625rem', sm: '0.625rem' },
+                                      fontWeight: 500,
+                                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
+                                    }}>
+                                      Stage:
+                                    </Typography>
+                                    <Typography variant="caption" sx={{ 
+                                      color: '#111827',
+                                      fontSize: { xs: '0.5625rem', sm: '0.625rem' },
+                                      fontWeight: 600,
+                                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
+                                    }}>
+                                      {meeting.stageName || 'n/a'}
+                                    </Typography>
+                                  </Box>
+                                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <Typography variant="caption" sx={{ 
+                                      color: '#6b7280',
+                                      fontSize: { xs: '0.5625rem', sm: '0.625rem' },
+                                      fontWeight: 500,
+                                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
+                                    }}>
+                                      Probability:
+                                    </Typography>
+                                    <Typography variant="caption" sx={{ 
+                                      color: '#111827',
+                                      fontSize: { xs: '0.5625rem', sm: '0.625rem' },
+                                      fontWeight: 600,
+                                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
+                                    }}>
+                                      {meeting.probability !== null && meeting.probability !== undefined 
+                                        ? `${meeting.probability}%` 
+                                        : 'n/a'}
+                                    </Typography>
+                                  </Box>
+                                </Box>
                               </Box>
                             </Box>
                           ))}
@@ -1210,7 +1432,21 @@ MemberCalendar.propTypes = {
   data: PropTypes.arrayOf(PropTypes.shape({
     owner: PropTypes.string.isRequired,
     team: PropTypes.string.isRequired,
-    meetings: PropTypes.arrayOf(PropTypes.string).isRequired
+    meetings: PropTypes.arrayOf(
+      PropTypes.oneOfType([
+        PropTypes.string, // Old format
+        PropTypes.shape({ // New format
+          label: PropTypes.string,
+          start: PropTypes.string,
+          end: PropTypes.string,
+          opportunities: PropTypes.arrayOf(PropTypes.shape({
+            Amount: PropTypes.number,
+            StageName: PropTypes.string,
+            Probability: PropTypes.number
+          }))
+        })
+      ])
+    ).isRequired
   })).isRequired
 };
 

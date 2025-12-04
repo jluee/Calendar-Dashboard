@@ -1,4 +1,27 @@
-// scripts/generateDashboardPayload.mjs
+/* eslint-env node */
+
+/**
+ * Synthetic "fluff" dataset generator matching the new nested format:
+ * [
+ *   {
+ *     owner: string,
+ *     team: "sales" | "customerSuccess",
+ *     meetings: [
+ *       {
+ *         label: string,
+ *         externalEmails: string[],
+ *         Email_Domain__c: string,
+ *         start: string, // ISO-8601
+ *         end: string,   // ISO-8601
+ *         contacts: [...],
+ *         opportunities: [...]
+ *       },
+ *       ...
+ *     ]
+ *   },
+ *   ...
+ * ]
+ */
 
 const owners = [
   { owner: "Ethan Morales", team: "sales" },
@@ -9,49 +32,57 @@ const owners = [
   { owner: "Olivia Grant", team: "customerSuccess" }
 ];
 
+// Completely fictional companies/domains to avoid real customer data
 const companies = [
-  "Spotify",
-  "Delta Air Lines",
-  "Target",
-  "Costco",
-  "Starbucks",
-  "Airbnb",
-  "Netflix",
-  "American Express",
-  "Ford Motor Company",
-  "Verizon",
-  "Visa",
-  "United Airlines",
-  "Nike",
-  "Coca-Cola",
-  "JPMorgan Chase",
-  "Adobe",
-  "Salesforce",
-  "UPS",
-  "Lyft"
+  { name: "Acme Insurance Group", domain: "acmeinsure.com" },
+  { name: "Northwind Retail Co", domain: "northwindretail.com" },
+  { name: "Orbitline Travel", domain: "orbitlinetravel.com" },
+  { name: "Beacon Health Partners", domain: "beaconhealthpartners.com" },
+  { name: "Brightwave Telecom", domain: "brightwavetelecom.com" },
+  { name: "Atlas Logistics", domain: "atlas-logistics.co" },
+  { name: "Pioneer Financial Services", domain: "pioneerfinserve.com" },
+  { name: "Bluefox Software", domain: "bluefoxsoft.io" },
+  { name: "Summit Energy Systems", domain: "summitenergy.io" },
+  { name: "Everlane Support Solutions", domain: "everlane-support.com" }
 ];
 
-const meetingTypes = [
+const meetingTypesSales = [
   "Discovery Call",
   "Platform Demo",
   "Pricing Review",
-  "Implementation Touchpoint",
+  "Initial POV Conversation",
   "Quarterly Business Review",
   "Strategy Session",
-  "Integration Workshop",
-  "Onboarding Check-in",
-  "Weekly Status Sync",
-  "Executive Alignment",
-  "Renewal Discussion",
   "Pilot Kickoff",
   "Product Deep Dive",
   "Roadmap Review",
-  "Support Escalation Review"
+  "Executive Alignment"
+];
+
+const meetingTypesCS = [
+  "Customer Success Touchpoint",
+  "Onboarding Check-in",
+  "Weekly Status Sync",
+  "Health Check",
+  "Renewal Planning",
+  "Adoption Workshop",
+  "Support Escalation Review",
+  "Quarterly Health Review",
+  "Roadmap Review",
+  "Admin Training Session"
+];
+
+const opportunityStageNames = [
+  "SAL",
+  "SQL",
+  "Initial Demo",
+  "Solutioning",
+  "Proposal"
 ];
 
 // Date range
-const START_DATE = new Date("2025-11-20T00:00:00Z");
-const END_DATE = new Date("2026-02-28T23:59:59Z");
+const START_DATE = new Date("2025-11-20T00:00:00-05:00"); // Eastern
+const END_DATE = new Date("2026-02-28T23:59:59-05:00");   // Eastern
 
 // Helpers
 function isWeekend(date) {
@@ -59,48 +90,139 @@ function isWeekend(date) {
   return d === 0 || d === 6;
 }
 
-function formatDate(date) {
-  // e.g. "November 18, 2025"
-  return date.toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric"
-  });
-}
-
-function formatTime(date) {
-  // e.g. "9:30 AM" - ensure format matches regex: (\d{1,2}:\d{2} [AP]M)
-  // Use manual formatting to avoid non-breaking space from toLocaleTimeString
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-  const displayHours = hours % 12 || 12; // Convert to 12-hour format
-  const displayMinutes = minutes.toString().padStart(2, '0');
-  // Use regular space (not non-breaking space) to match regex pattern
-  return `${displayHours}:${displayMinutes} ${ampm}`;
-}
-
 function randomItem(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function createMeetingString(ownerName, date, startTime, endTime) {
-  const company = randomItem(companies);
-  const mtype = randomItem(meetingTypes);
-  const firstName = ownerName.split(" ")[0];
-
-  const title =
-    Math.random() < 0.5
-      ? `${company} <> ${firstName} | ${mtype}`
-      : `${mtype} | ${company}`;
-
-  return `${title}, ${formatDate(date)} ${formatTime(startTime)} - ${formatTime(
-    endTime
-  )}`;
+function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function addMinutes(date, minutes) {
-  return new Date(date.getTime() + minutes * 60000);
+function pad2(n) {
+  return n.toString().padStart(2, "0");
+}
+
+function toIsoWithOffset(date) {
+  // Keep it simple: treat server time as local with fixed -05:00 offset
+  const year = date.getFullYear();
+  const month = pad2(date.getMonth() + 1);
+  const day = pad2(date.getDate());
+  const hours = pad2(date.getHours());
+  const minutes = pad2(date.getMinutes());
+  const seconds = pad2(date.getSeconds());
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}-05:00`;
+}
+
+function formatLabelDate(date, startTime, endTime) {
+  // e.g. "January 15, 2026 10:30 - 11:00 AM"
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+  const month = monthNames[date.getMonth()];
+  const day = date.getDate();
+  const year = date.getFullYear();
+
+  const fmtTime = (d) => {
+    let h = d.getHours();
+    const m = pad2(d.getMinutes());
+    const ampm = h >= 12 ? "PM" : "AM";
+    h = h % 12 || 12;
+    return `${h}:${m} ${ampm}`;
+  };
+
+  const startStr = fmtTime(startTime);
+  const endStr = fmtTime(endTime);
+
+  // For label, we typically drop AM/PM on start time if same as end
+  const startNoAmPm = startStr.replace(" AM", "").replace(" PM", "");
+  return `${month} ${day}, ${year} ${startNoAmPm} - ${endStr}`;
+}
+
+function generateEmails(company, count) {
+  const externalEmails = [];
+  for (let i = 0; i < count; i++) {
+    const first = randomItem([
+      "alex", "jordan", "taylor", "morgan", "riley", "casey", "jamie",
+      "chris", "sam", "devon", "parker", "jules", "andrea", "marco"
+    ]);
+    const last = randomItem([
+      "lee", "martin", "roberts", "gonzalez", "nguyen", "kim",
+      "cooper", "thomas", "walker", "carter", "rivera", "murphy"
+    ]);
+    externalEmails.push(`${first}.${last}@${company.domain}`);
+  }
+  return externalEmails;
+}
+
+function generateSalesforceId(prefix = "003") {
+  // ridiculously fake but structurally okay
+  const alphabet =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let body = "";
+  for (let i = 0; i < 15; i++) {
+    body += alphabet[randomInt(0, alphabet.length - 1)];
+  }
+  return `${prefix}${body}`;
+}
+
+function createContacts(externalEmails, company, ownerId) {
+  const contacts = [];
+
+  externalEmails.forEach((email) => {
+    const [local] = email.split("@");
+    const nameParts = local
+      .split(".")
+      .map((p) => p.charAt(0).toUpperCase() + p.slice(1));
+    const name = nameParts.join(" ");
+
+    const contact = {
+      attributes: {
+        type: "Contact",
+        url: `/services/data/v59.0/sobjects/Contact/${generateSalesforceId()}`
+      },
+      Name: name,
+      Name_of_Account__c: company.name,
+      AccountId: generateSalesforceId("001"),
+      Email: email,
+      Email_Domain__c: `.${company.domain.toUpperCase()}`,
+      OwnerId: ownerId
+    };
+
+    contacts.push(contact);
+  });
+
+  return contacts;
+}
+
+function createOpportunities(company, ownerId) {
+  const opportunities = [];
+
+  // 0–2 opportunities per meeting
+  const count = randomInt(0, 2);
+  for (let i = 0; i < count; i++) {
+    const stage = randomItem(opportunityStageNames);
+    const probabilityMap = {
+      SAL: 0,
+      SQL: 10,
+      "Initial Demo": 20,
+      Solutioning: 40,
+      Proposal: 60
+    };
+
+    const opp = {
+      OwnerId: ownerId,
+      Name: `${company.name} - ${stage} Motion`,
+      AccountId: generateSalesforceId("001"),
+      Amount: randomInt(30000, 250000),
+      StageName: stage,
+      Probability: probabilityMap[stage] ?? 10
+    };
+
+    opportunities.push(opp);
+  }
+
+  return opportunities;
 }
 
 /**
@@ -109,21 +231,24 @@ function addMinutes(date, minutes) {
  * - 1 has 3 meetings
  * - 2 have 2 meetings each
  * - 1 has 1 meeting
- * => 8 meetings per week minimum
+ * => 8 meetings/week minimum
  */
-function generateMeetingsForOwner(ownerName) {
+function generateMeetingsForOwner(ownerName, team) {
   const meetings = [];
 
   // Start from first Monday on/after START_DATE
-  let jordan = new Date(START_DATE.getTime());
-  while (jordan < END_DATE && jordan.getDay() !== 1) {
-    jordan.setDate(jordan.getDate() + 1);
+  let cursor = new Date(START_DATE.getTime());
+  while (cursor < END_DATE && cursor.getDay() !== 1) {
+    cursor.setDate(cursor.getDate() + 1);
   }
 
-  while (jordan <= END_DATE) {
+  const meetingTypes =
+    team === "sales" ? meetingTypesSales : meetingTypesCS;
+
+  while (cursor <= END_DATE) {
     // Collect weekdays (Mon–Fri) for this week
     const weekDays = [];
-    const weekStart = new Date(jordan.getTime());
+    const weekStart = new Date(cursor.getTime());
     for (let i = 0; i < 7; i++) {
       const day = new Date(weekStart.getTime());
       day.setDate(day.getDate() + i);
@@ -133,38 +258,32 @@ function generateMeetingsForOwner(ownerName) {
 
     if (weekDays.length === 0) break;
 
-    // We want at least 4 weekdays in play; if fewer, use all but still follow pattern loosely
     const dayIndices = [...weekDays.keys()];
-    // Shuffle
+    // Shuffle indexes
     for (let i = dayIndices.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [dayIndices[i], dayIndices[j]] = [dayIndices[j], dayIndices[i]];
     }
 
     const selected = dayIndices.slice(0, Math.min(4, weekDays.length));
-
-    // Sort so days are in chronological order
     selected.sort((a, b) => a - b);
 
-    // Assign meeting counts:
-    // First = 3 meetings, next two = 2 meetings each, last = 1 meeting
     const pattern = [3, 2, 2, 1].slice(0, selected.length);
 
     for (let idx = 0; idx < selected.length; idx++) {
       const day = weekDays[selected[idx]];
       const count = pattern[idx];
 
-      // Generate count meetings on this date with random time blocks
-      // Start between 9:00 AM and 3:30 PM to allow 30–60 min meetings
       const usedSlots = [];
+
       for (let m = 0; m < count; m++) {
         let startHour, startMinute;
-
-        // avoid overlapping exact same start times
         let tries = 0;
+
+        // avoid exact slot collisions
         do {
           tries++;
-          const slotIndex = Math.floor(Math.random() * 9); // 0..8 => 9–16
+          const slotIndex = randomInt(0, 8); // 9..17 hours (9–17)
           startHour = 9 + slotIndex;
           startMinute = Math.random() < 0.5 ? 0 : 30;
         } while (
@@ -179,73 +298,101 @@ function generateMeetingsForOwner(ownerName) {
         const startTime = new Date(day.getTime());
         startTime.setHours(startHour, startMinute, 0, 0);
 
-        const duration = Math.random() < 0.7 ? 30 : 60; // more 30-mins than 60
-        const endTime = addMinutes(startTime, duration);
+        const duration = Math.random() < 0.7 ? 30 : 60;
+        const endTime = new Date(startTime.getTime() + duration * 60000);
 
-        meetings.push(createMeetingString(ownerName, day, startTime, endTime));
+        // pick company + meeting type
+        const company = randomItem(companies);
+        const meetingType = randomItem(meetingTypes);
+        const firstName = ownerName.split(" ")[0];
+
+        const externalEmails = generateEmails(company, randomInt(1, 4));
+        const Email_Domain__c = `.${company.domain.toUpperCase()}`;
+        const contacts = createContacts(
+          externalEmails.slice(0, randomInt(1, externalEmails.length)),
+          company,
+          // fake-ish owner id
+          "005" + generateSalesforceId("").slice(3)
+        );
+        const opportunities = createOpportunities(company, contacts[0].OwnerId);
+
+        // label like: "Acme & Ethan | Discovery Call, January 15, 2026 10:30 - 11:00 AM"
+        const labelDatePart = formatLabelDate(day, startTime, endTime);
+        const labelPrefix =
+          Math.random() < 0.5
+            ? `${company.name} <> ${firstName} | ${meetingType}`
+            : `${meetingType} | ${company.name}`;
+
+        const label = `${labelPrefix}, ${labelDatePart}`;
+
+        meetings.push({
+          label,
+          externalEmails,
+          Email_Domain__c,
+          start: toIsoWithOffset(startTime),
+          end: toIsoWithOffset(endTime),
+          contacts,
+          opportunities
+        });
       }
     }
 
-    // Move jordan 7 days forward (next week)
-    jordan.setDate(jordan.getDate() + 7);
+    cursor.setDate(cursor.getDate() + 7); // next week
   }
 
-  // Sort meetings chronologically (nice for UI)
-  meetings.sort((a, b) => {
-    const dateA = new Date(a.split(", ").slice(-2).join(" "));
-    const dateB = new Date(b.split(", ").slice(-2).join(" "));
-    return dateA - dateB;
-  });
+  // Sort chronologically by start
+  meetings.sort((a, b) => new Date(a.start) - new Date(b.start));
 
   return meetings;
 }
 
 function generateDataset() {
-  const payload = owners.map(({ owner, team }) => ({
+  return owners.map(({ owner, team }) => ({
     owner,
     team,
-    meetings: generateMeetingsForOwner(owner)
+    meetings: generateMeetingsForOwner(owner, team)
   }));
-
-  return payload;
 }
 
-// Run & write JSON to file
-import { writeFileSync, existsSync, readFileSync } from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+// --- Write to file (similar to your previous script) ---
+import { writeFileSync, existsSync, readFileSync } from "fs";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const data = generateDataset();
-const outputPath = join(__dirname, '..', 'public', 'dashboard-payload.json');
+const outputPath = join(__dirname, "..", "public", "data-payload.update.json");
 
-// Generate JSON string
 const jsonContent = JSON.stringify(data, null, 2);
 
-// Write to file
 try {
-  writeFileSync(outputPath, jsonContent, 'utf-8');
-  
-  // Verify the write was successful
+  writeFileSync(outputPath, jsonContent, "utf-8");
+
   if (existsSync(outputPath)) {
-    const writtenContent = readFileSync(outputPath, 'utf-8');
+    const writtenContent = readFileSync(outputPath, "utf-8");
     if (writtenContent.length > 0) {
+      const totalMeetings = data.reduce(
+        (sum, member) => sum + member.meetings.length,
+        0
+      );
       console.log(`✅ Generated dashboard payload: ${outputPath}`);
       console.log(`   Total members: ${data.length}`);
-      console.log(`   Total meetings: ${data.reduce((sum, member) => sum + member.meetings.length, 0)}`);
-      console.log(`   File size: ${(writtenContent.length / 1024).toFixed(2)} KB`);
+      console.log(`   Total meetings: ${totalMeetings}`);
+      console.log(
+        `   File size: ${(writtenContent.length / 1024).toFixed(2)} KB`
+      );
     } else {
-      console.error('❌ Error: File was written but is empty!');
+      console.error("❌ Error: File was written but is empty!");
       process.exit(1);
     }
   } else {
-    console.error('❌ Error: File was not created!');
+    console.error("❌ Error: File was not created!");
     process.exit(1);
   }
 } catch (error) {
-  console.error('❌ Error writing file:', error.message);
+  console.error("❌ Error writing file:", error.message);
   process.exit(1);
 }
 
