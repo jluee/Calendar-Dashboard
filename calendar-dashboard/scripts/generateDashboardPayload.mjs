@@ -227,11 +227,9 @@ function createOpportunities(company, ownerId) {
 
 /**
  * For each week:
- * - choose 4 weekdays (Mon–Fri)
- * - 1 has 3 meetings
- * - 2 have 2 meetings each
- * - 1 has 1 meeting
- * => 8 meetings/week minimum
+ * - Randomly choose 5-10 meetings per week (varies by team member)
+ * - Distribute meetings across weekdays (Mon–Fri) realistically
+ * - Some days have 0-1 meetings, some have 2-3 meetings
  */
 function generateMeetingsForOwner(ownerName, team) {
   const meetings = [];
@@ -258,21 +256,51 @@ function generateMeetingsForOwner(ownerName, team) {
 
     if (weekDays.length === 0) break;
 
-    const dayIndices = [...weekDays.keys()];
-    // Shuffle indexes
-    for (let i = dayIndices.length - 1; i > 0; i--) {
+    // Random number of meetings for this week (5-10)
+    const totalMeetings = randomInt(5, 10);
+    
+    // Distribute meetings across weekdays
+    // Strategy: Some days get 0, some get 1, some get 2, some get 3
+    // We'll randomly assign meetings to days
+    const dayMeetings = new Array(weekDays.length).fill(0);
+    let remaining = totalMeetings;
+    
+    // First pass: give at least 1 meeting to some days (but not all)
+    const daysWithMeetings = randomInt(3, Math.min(5, weekDays.length)); // 3-5 days will have meetings
+    const selectedDays = [...weekDays.keys()];
+    // Shuffle to randomize which days get meetings
+    for (let i = selectedDays.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [dayIndices[i], dayIndices[j]] = [dayIndices[j], dayIndices[i]];
+      [selectedDays[i], selectedDays[j]] = [selectedDays[j], selectedDays[i]];
     }
-
-    const selected = dayIndices.slice(0, Math.min(4, weekDays.length));
+    
+    const daysToUse = selectedDays.slice(0, daysWithMeetings);
+    for (let i = 0; i < daysWithMeetings && remaining > 0; i++) {
+      dayMeetings[daysToUse[i]] = 1;
+      remaining--;
+    }
+    
+    // Second pass: distribute remaining meetings (can add 1-2 more to random days)
+    while (remaining > 0) {
+      const dayIdx = randomInt(0, weekDays.length - 1);
+      if (dayMeetings[dayIdx] < 3) { // Max 3 meetings per day
+        dayMeetings[dayIdx]++;
+        remaining--;
+      }
+    }
+    
+    // Sort days that have meetings
+    const selected = [];
+    for (let i = 0; i < dayMeetings.length; i++) {
+      if (dayMeetings[i] > 0) {
+        selected.push(i);
+      }
+    }
     selected.sort((a, b) => a - b);
-
-    const pattern = [3, 2, 2, 1].slice(0, selected.length);
 
     for (let idx = 0; idx < selected.length; idx++) {
       const day = weekDays[selected[idx]];
-      const count = pattern[idx];
+      const count = dayMeetings[selected[idx]];
 
       const usedSlots = [];
 

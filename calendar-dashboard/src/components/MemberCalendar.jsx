@@ -127,10 +127,14 @@ const MemberCalendar = ({ data }) => {
           const timeOptions = { hour: 'numeric', minute: '2-digit', hour12: true };
           const timeStr = startDate.toLocaleTimeString('en-US', timeOptions).replace(/\u202F/g, ' ');
           
-          // Extract opportunity data (use first opportunity if multiple exist)
-          const opportunity = meeting.opportunities && meeting.opportunities.length > 0 
-            ? meeting.opportunities[0] 
-            : null;
+          // Extract opportunity data (use first opportunity for display, but sum all for pipeline)
+          const opportunities = meeting.opportunities || [];
+          const opportunity = opportunities.length > 0 ? opportunities[0] : null;
+          
+          // Sum all opportunity amounts for this meeting
+          const totalAmount = opportunities.reduce((sum, opp) => {
+            return sum + (opp.Amount || 0);
+          }, 0);
           
           meetingData = {
             text: meeting.label || '',
@@ -138,7 +142,7 @@ const MemberCalendar = ({ data }) => {
             time: timeStr,
             fullText: meeting.label || '',
             opportunityName: opportunity?.Name ?? null,
-            amount: opportunity?.Amount ?? null,
+            amount: totalAmount, // Total of all opportunities for this meeting
             stageName: opportunity?.StageName ?? null,
             probability: opportunity?.Probability ?? null
           };
@@ -243,6 +247,31 @@ const MemberCalendar = ({ data }) => {
     });
   };
 
+  // Calculate weekly stats for a member (meeting count and total pipeline)
+  const getWeeklyStats = (member) => {
+    // Get all days in the current week
+    const weekDateStrings = weekDays.map(day => formatDateForComparison(day));
+    
+    // Filter meetings for the current week (Monday-Friday)
+    const weekMeetings = member.meetings.filter(meeting => {
+      if (!meeting || !meeting.date) return false;
+      
+      const meetingDateString = formatDateForComparison(meeting.date);
+      return weekDateStrings.includes(meetingDateString);
+    });
+    
+    const meetingCount = weekMeetings.length;
+    const totalPipeline = weekMeetings.reduce((sum, meeting) => {
+      const amount = meeting.amount;
+      if (typeof amount === 'number' && !isNaN(amount) && amount > 0) {
+        return sum + amount;
+      }
+      return sum;
+    }, 0);
+    
+    return { meetingCount, totalPipeline };
+  };
+
   const getTeamColor = (teamName) => {
     const colors = {
       partner: '#3b82f6',
@@ -263,6 +292,17 @@ const MemberCalendar = ({ data }) => {
   // Format team name for display
   const formatTeamName = (teamName) => {
     return teamName.replace(/([A-Z])/g, ' $1').trim();
+  };
+
+  // Format currency for display
+  const formatCurrency = (amount) => {
+    if (!amount || amount === 0) return '$0';
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(amount);
   };
 
 
@@ -780,9 +820,32 @@ const MemberCalendar = ({ data }) => {
                             py: 0,
                             height: { xs: 16, sm: 18 },
                             fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
-                            display: { xs: 'none', sm: 'inline-flex' }
+                            display: { xs: 'none', sm: 'inline-flex' },
+                            mb: { xs: 0, sm: 0.25 }
                           }}
                         />
+                        {/* Weekly Stats */}
+                        {(() => {
+                          const stats = getWeeklyStats(member);
+                          return (
+                            <Box sx={{ 
+                              display: { xs: 'none', sm: 'flex' },
+                              flexDirection: 'column',
+                              gap: 0.25,
+                              mt: 0.5
+                            }}>
+                              <Typography variant="caption" sx={{ 
+                                color: '#6b7280',
+                                fontSize: '0.625rem',
+                                fontWeight: 500,
+                                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+                                lineHeight: 1.2
+                              }}>
+                                {stats.meetingCount} meeting{stats.meetingCount !== 1 ? 's' : ''} • {formatCurrency(stats.totalPipeline)} pipeline
+                              </Typography>
+                            </Box>
+                          );
+                        })()}
                       </Box>
                     </Box>
                   </TableCell>
@@ -1075,7 +1138,10 @@ const MemberCalendar = ({ data }) => {
                         fontSize: { xs: '0.625rem', sm: '0.6875rem' },
                         fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
                       }}>
-                        {member.meetings.length} meetings
+                        {(() => {
+                          const stats = getWeeklyStats(member);
+                          return `${stats.meetingCount} meetings this week`;
+                        })()}
                       </Typography>
                     </Box>
                   </Box>
@@ -1097,7 +1163,10 @@ const MemberCalendar = ({ data }) => {
                       fontSize: { xs: '0.6875rem', sm: '0.75rem' },
                       fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'
                     }}>
-                      {member.meetings.length}
+                      {(() => {
+                        const stats = getWeeklyStats(member);
+                        return stats.meetingCount;
+                      })()}
                     </Typography>
                   </Box>
                 </Box>
