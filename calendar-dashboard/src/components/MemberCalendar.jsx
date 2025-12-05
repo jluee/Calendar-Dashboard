@@ -687,8 +687,8 @@ const MemberCalendar = ({ data }) => {
                     key={index}
                     align="center"
                     sx={{ 
-                      minWidth: { xs: 100, sm: 110, md: 130 },
-                      width: { xs: 100, sm: 110, md: 130 },
+                      minWidth: { xs: 130, sm: 110, md: 130 },
+                      width: { xs: 130, sm: 110, md: 130 },
                       background: isToday(day) ? '#eff6ff' : '#ffffff',
                       borderLeft: index === 0 ? '1px solid #e5e7eb' : 'none',
                       borderRight: '1px solid #e5e7eb',
@@ -696,7 +696,7 @@ const MemberCalendar = ({ data }) => {
                       color: isToday(day) ? '#2563eb' : '#374151',
                       fontSize: { xs: '0.6875rem', sm: '0.75rem' },
                       py: { xs: 0.75, sm: 1 },
-                      px: { xs: 0.5, sm: 1 },
+                      px: { xs: 0.75, sm: 1 },
                       position: 'sticky',
                       top: 0,
                       zIndex: 2,
@@ -829,14 +829,14 @@ const MemberCalendar = ({ data }) => {
                           const stats = getWeeklyStats(member);
                           return (
                             <Box sx={{ 
-                              display: { xs: 'none', sm: 'flex' },
+                              display: 'flex',
                               flexDirection: 'column',
                               gap: 0.25,
                               mt: 0.5
                             }}>
                               <Typography variant="caption" sx={{ 
                                 color: '#6b7280',
-                                fontSize: '0.625rem',
+                                fontSize: { xs: '0.5625rem', sm: '0.625rem' },
                                 fontWeight: 500,
                                 fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
                                 lineHeight: 1.2
@@ -858,11 +858,11 @@ const MemberCalendar = ({ data }) => {
                       <TableCell 
                         key={dayIndex}
                         sx={{ 
-                          minWidth: { xs: 100, sm: 110, md: 130 },
-                          width: { xs: 100, sm: 110, md: 130 },
+                          minWidth: { xs: 130, sm: 110, md: 130 },
+                          width: { xs: 130, sm: 110, md: 130 },
                           borderRight: '1px solid #e5e7eb',
                           py: { xs: 0.75, sm: 1 },
-                          px: { xs: 0.5, sm: 0.75 },
+                          px: { xs: 0.75, sm: 0.75 },
                           verticalAlign: 'top',
                           background: '#ffffff'
                         }}
@@ -887,11 +887,12 @@ const MemberCalendar = ({ data }) => {
                               <Box 
                                 key={meetingIndex}
                                 sx={{ 
-                                  p: { xs: 0.75, sm: 1 },
+                                  p: { xs: 0.875, sm: 1 },
                                   background: `${getTeamColor(member.team)}0d`,
                                   borderLeft: `2px solid ${getTeamColor(member.team)}`,
                                   borderRadius: 0.5,
                                   cursor: 'pointer',
+                                  minWidth: 0,
                                   '&:hover': {
                                     background: `${getTeamColor(member.team)}15`,
                                     transform: 'translateX(2px)'
@@ -955,7 +956,12 @@ const MemberCalendar = ({ data }) => {
                                       textAlign: 'right',
                                       wordBreak: 'break-word',
                                       flex: 1,
-                                      minWidth: 0
+                                      minWidth: 0,
+                                      lineHeight: 1.3,
+                                      display: '-webkit-box',
+                                      WebkitLineClamp: 2,
+                                      WebkitBoxOrient: 'vertical',
+                                      overflow: 'hidden'
                                     }}>
                                       {meeting.opportunityName || 'n/a'}
                                     </Typography>
