@@ -235,18 +235,18 @@ function generateMeetingsForOwner(ownerName, team) {
   const meetings = [];
 
   // Start from first Monday on/after START_DATE
-  let cursor = new Date(START_DATE.getTime());
-  while (cursor < END_DATE && cursor.getDay() !== 1) {
-    cursor.setDate(cursor.getDate() + 1);
+  let currentDate = new Date(START_DATE.getTime());
+  while (currentDate < END_DATE && currentDate.getDay() !== 1) {
+    currentDate.setDate(currentDate.getDate() + 1);
   }
 
   const meetingTypes =
     team === "sales" ? meetingTypesSales : meetingTypesCS;
 
-  while (cursor <= END_DATE) {
+  while (currentDate <= END_DATE) {
     // Collect weekdays (Mon–Fri) for this week
     const weekDays = [];
-    const weekStart = new Date(cursor.getTime());
+    const weekStart = new Date(currentDate.getTime());
     for (let i = 0; i < 7; i++) {
       const day = new Date(weekStart.getTime());
       day.setDate(day.getDate() + i);
@@ -365,7 +365,7 @@ function generateMeetingsForOwner(ownerName, team) {
       }
     }
 
-    cursor.setDate(cursor.getDate() + 7); // next week
+    currentDate.setDate(currentDate.getDate() + 7); // next week
   }
 
   // Sort chronologically by start
