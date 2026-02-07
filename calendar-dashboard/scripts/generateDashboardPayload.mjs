@@ -81,8 +81,8 @@ const opportunityStageNames = [
 ];
 
 // Date range
-const START_DATE = new Date("2025-11-20T00:00:00-05:00"); // Eastern
-const END_DATE = new Date("2026-02-28T23:59:59-05:00");   // Eastern
+const START_DATE = new Date("2026-01-15T00:00:00-05:00"); // Eastern - January 15, 2026
+const END_DATE = new Date("2026-04-30T23:59:59-05:00");   // Eastern - April 30, 2026
 
 // Helpers
 function isWeekend(date) {
