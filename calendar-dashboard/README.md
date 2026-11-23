@@ -33,9 +33,11 @@ To generate or regenerate the dashboard payload data:
 npm run generate:payload
 ```
 
-This will generate a new `public/dashboard-payload.json` file with randomly generated meetings for all team members. The script creates meetings from November 15, 2025 to February 28, 2026.
+This writes `public/data-payload.update.json` with randomly generated meetings for all team members, covering **today through the end of the next June**.
 
-**Note:** This script is a temporary solution until the project is connected to a real API. Once connected, the API will provide the meeting data directly.
+While the app is open, when the chronologically last meeting has occurred it automatically generates and appends another **6 months** of meetings (and keeps doing so). Extended data is stored in `localStorage` so it survives refreshes.
+
+**Note:** This is a temporary solution until the project is connected to a real API. Once connected, the API will provide the meeting data directly.
 
 ### Build
 
